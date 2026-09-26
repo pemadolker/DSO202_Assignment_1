@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: task-tracker-ingress
+  namespace: dso202-assignment-01
+  labels:
+    app: task-tracker
+  annotations:
+    nginx.ingress.kubernetes.io/limit-rps: "5"   # NGINX-specific: caps requests/sec per client IP
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - tasktracker.local
+        - api.tasktracker.local
+      secretName: tasktracker-tls
+  rules:
+    - host: tasktracker.local
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-svc
+                port:
+                  number: 8080
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-svc
+                port:
+                  number: 8080
+    - host: api.tasktracker.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: backend-svc
+                port:
+                  number: 8080

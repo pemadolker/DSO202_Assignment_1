@@ -1,0 +1,10 @@
+apiVersion: dso202.example.com/v1
+kind: TaskTrackerBackup
+metadata:
+  name: nightly-backup
+  namespace: dso202-assignment-01
+  labels:
+    app: task-tracker
+spec:
+  schedule: "0 2 * * *"
+  retentionDays: 7
